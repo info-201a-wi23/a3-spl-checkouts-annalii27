@@ -1,86 +1,90 @@
 ---
 title: "A3: SPL Library Checkouts"
+subtitle: "Anna Li"
 output: html_document
 ---
 
+```{r message=FALSE, warning=FALSE, include=FALSE}
+library(dplyr)
+library(stringr)
+library(knitr)
+library_df <- read.csv("/Users/liannaqiu/Desktop/2017-2023-10-Checkouts-SPL-Data.csv", stringsAsFactors = FALSE)
+```
+
 ### Introduction
 
-An introduction of the data and a description of the trends/books/items you are choosing to analyze (and why!)
+SPL Checkout data is a book checkout data collected by the Seattle Public Library since 2017 due to the Open Data Initiative promoted by Seattle. It includes anonymous data of the number and types of checkouts (book, ebook, films etc.) each month. The trends I intend to look at are how historical events in the past few years may have impacted checkout trends. 
+
+Focusing on the Black Liberation Movement that peaked in June 2020 and COVID-19 pandemic that started influencing the U.S. in March 2020. I will be looking at trends over the years (`CheckoutYear`) and number of checkouts(`Checkouts` ) to identify possible increases and decreases of overall and individual items that may be indicative of these historical events. 
+
+For the Black Liberation Movement, I will be looking at a specific book - “The New Jim Crow”. The New Jim Crow discusses the social inequalities within the legal justice system. With Black Liberation Movement that was sparked by a legal justice issue, it would be valid to utilize this book as a source of measurement. As for COVID-19 pandemic, impact is examined through usage type (`UsageType`) and whether there is increased checkouts during pandemic where people are quarantined at home. 
+
+Noting that the two events occurred in 2020, I will be looking into possible checkout trends (`Checkouts`, `CheckoutMonth`) in 2020 (`CheckoutYear`). 
+
 
 ### Summary Information
+```{r, echo = FALSE, warning = FALSE, message = FALSE, code = readLines("summary.R")}
+```
+When initially looking at the data, I was curious about whether historical events including Black Liberation Movement and COVID-19 pandemic that occurred between 2017-2023 had influence on number and types of checkouts from the Seattle Public Library. 
 
-Write a summary paragraph of findings that includes the 5 values calculated from your summary information R script
+To answer this inquiry, I first decided to identify the impact of Black Liberation Movement on checkout data through the checkout information of the book *The New Jim Crow: Mass Incarceration in the Age of Colorblindness* by Michelle Alexander.  In 2020, `r item_month_highest_checkout` (June) had `r number_item_month_highest_checkout` checkouts, which was the highest number. It is interesting to see the impact of historical events, which is reflected in library checkouts, as *The New Jim Crow* had the highest checkout number of `r highest_item_checkout_year` in `r highest_item_year` and lowest in `r lowest_item_year` with `r lowest_item_checkout_year`. This indicates that although the book was more encouraged to be checked out during the movement, it did not necessarily increase in checkout overall (afterwards). This may be something interesting to look into, such as would other books of similar topic have similar trends.
+Also, the average checkouts for each item is `r average_checkout`, while *The New Jim Crow* has an average checkout of `r item_average_checkout`. This information should be viewed with a grain of salt as in the overall average, items of the same title but different variations will be seen as a different items, which may lower the average; while *The New Jim Crow* includes titles of different variations. 
 
-These will likely be calculated using your DPLYR skills, answering questions such as:
-
-- What is the average number of checkouts for each item?
-- What is the month or year with the most/least checkouts for a book that you're interested in?
-- What is the month or year with the most/least checkouts for ebooks?
-- How has the number of print book checkouts changed over time?
-
-Feel free to calculate and report values that you find relevant.
+As for COVID-19, I was curious if being quarantined changed any patterns of checkouts. Between 2017 and 2023, `r highest_digital_checkout_year` had the most checkouts for digital items (compared to physical items) and `r highest_checkout_year` had the most checkouts in general. This shows that there may be other factors influencing numbers of digital checkouts throughout the years. Also, we may need to utilize other factors to examine how COVID-19 pandemic have influenced checkout data, instead of looking at number of checkouts.
 
 ### The Dataset
 
-- Who collected/published the data?  
+- Who collected/published the data? 
+
+    The Seattle Public Library 
+
 - What are the parameters of the data (dates, number of checkouts, kinds of books, etc.)?
-- How was the data collected or generated?  
-- Why was the data collected?  
-- What, if any, ethical questions do you need to consider when working with this data?  
+
+    Usage Class (Physical or digital), Checkout type, Material type, Checkout year, Checkout month, number of checkouts (that’s 10+), Title, ISBN, Creator, Subjects, Publisher, Publication year.
+
+- How was the data collected or generated? 
+
+    Data between 2005 and 2017 is collected on accident by the artwork titled “Making the Invisible Visible” exhibited in the library, which records anonymous checkout information from all Library locations in Seattle. From 2017, Seattle Public Library records monthly count of Seattle Public Library checkouts by title for physical and electronic items.
+
+- Why was the data collected? 
+
+    To understand checkout trends over the years and during historical events like COVID-19 pandemic , to support the open data initiative that promotes transparency, public/private collaboration and civic problem-solving.
+ 
+- What, if any, ethical questions do you need to consider when working with this data?
+
+    - Privacy concerns, patron confidentiality (bedrock principle for Library + essential to intellectual freedom, which may lead to possible leak of personal information/harm 
+
+    - Informed consent to individuals for using their checkout data 
+
+
 - What are possible limitations or problems with this data?   (at least 200 words)
 
+    Some possible limitations include less accurate data from checkout data before 2017. According to the pdf “Checkouts By Title FAQs” listed on Checkouts by Title page for Seattle’s Open Data, some titles or checkouts may not be recorded or included in Horizon bibliographic record. This may skew trends analyzed. 
+
+    Another limitation with the dataset is that many columns have messy data that aren’t standardized. When attempting to analyze Material Type (`MaterialType`) trends throughout the years, since the format of how a material type can be presented is so different, it was hard to present data trends on it.  This is similar for the subject (`Subject`) of items. Since all the possible subjects that an item can be sorted into are all listed in the same box, such as ‘film, Juvenile drama, snakes’. It is hard to present general trends of checkout items. This limits the type of trends I can investigate as it would require a more detailed understanding of all the Subjects and material types in the library system.  
+
+    Lastly, a more broad limitation of data would be that it may not be an accurate reflection of events  and or reflects a certain population that goes to libraries and borrow books (which would require official identification and residential proof). 
 
 ### First Trends Over Time Chart
 
-Include a chart. Make sure to describe why you included the chart, and what patterns emerged
-
-The first chart that you will create and include will show the trend over time of your variable/topic/interest. Think carefully about what you want to communicate to your user (you may have to find relevant trends in the dataset first!). Here are some requirements to help guide your design:
-
-- Show more than one, but fewer than ~10 trends
-  - For example, two books, or 5 different mediums
-- You must have clear x and y axis labels
-- The chart needs a clear title 
-- You need a legend for your different line colors and a clear - legend title
-In your .Rmd file, make sure to describe why you included the chart, and what patterns emerged
-
-When we say "clear" or "human readable" titles and labels, that means that you should not just display the variable name.
-
-Here's an example of how to run an R script inside an RMarkdown file:
-
-``````{r, echo = FALSE, warning = FALSE, code = readLines("chart1_example.R")}
+```{r, echo = FALSE, warning = FALSE, code = readLines("chart1_example.R")}
 ```
+
+In this graph, I decided to show the checkout trend for the item *The New Jim Crow* between 2017-2023. My prediction was an increase in number of checkouts of the item starting 2020, due to the Black Liberation Movement that got big during June 2020. Although the graph did indicate a drastic increase in number of checkouts for the item in 2020, there is also a significant decrease in number of checkouts afterwards. Not including 2023 as the year isn't over, in 2022, the total checkouts of *The New Jim Crow* is lower than that before 2020. 
+I decided on using line chart to demonstrate quantitative change in number of checkouts over time. 
 
 ### Second Trends Over Time Chart
 
-Include a chart. Make sure to describe why you included the chart, and what patterns emerged
-
-The second chart that you will create and include will show another trend over time of your variable/topic/interest. Think carefully about what you want to communicate to your user (you may have to find relevant trends in the dataset first!). Here are some requirements to help guide your design:
-
-- Show more than one, but fewer than ~10 trends
-  - For example, two books, or 5 different mediums
-- You must have clear x and y axis labels
-- The chart needs a clear title 
-- You need a legend for your different line colors and a clear - legend title
-In your .Rmd file, make sure to describe why you included the chart, and what patterns emerged
-
-When we say "clear" or "human readable" titles and labels, that means that you should not just display the variable name.
-
-Here's an example of how to run an R script inside an RMarkdown file:
-
-``````{r, echo = FALSE, code = readLines("chart2_example.R")}
+```{r, echo = FALSE, warning = FALSE, message = FALSE, code = readLines("chart2_example.R")}
 ```
+
+In this graph, I decided to compare number of digital checkouts versus physical checkouts. Through colored bar chart, it is easier for one to identify the difference in numbers. The results show that starting 2020, there is drastic increase in number of digital checkouts. This trend is a possible indication that COVID-19 pandemic made digital checkouts more common. As digital checkouts continue to have higher numbers of checkout than physical checkouts even after 2020, it shows how the historical event may have influenced our main ways of checking library items out. 
 
 ### Your Choice
 
-The last chart is up to you. It could be a line plot, scatter plot, histogram, bar plot, stacked bar plot, and more. Here are some requirements to help guide your design:
-
-- You must have clear x and y axis labels
-- The chart needs a clear title 
-- You need a legend for your different line colors and a clear legend title
-
-Here's an example of how to run an R script inside an RMarkdown file:
-
-``````{r, echo = FALSE, code = readLines("chart2_example.R")}
+```{r, echo = FALSE, message = FALSE,  code = readLines("chart3_example.R")}
 ```
 
+In this graph, I calculated the average checkouts for both in general and for *The New Jim Crow*. The intention was to compare checkout averages of the item with overall averages, to observe possible differences or similarities. Different from the general, more stable average of items checked out, *The New Jim Crow* demonstrates an unusual increase in checkout averages between 2020 and 2022. As it differs from the general mean, it is safe to say that the increase in number of checkouts of *The New Jim Crow* is random. It may be due the fact that a historical event - the Black Liberation Movement, occurred during the same time period. 
+I decided to utilize line chart again as it is the most suitable way to display and compare two averages and their fluctuations throughout the years. 
 
